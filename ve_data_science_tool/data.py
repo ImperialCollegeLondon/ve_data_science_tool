@@ -3,7 +3,7 @@
 from pathlib import Path
 from pprint import pformat
 from textwrap import indent
-from typing import ClassVar
+from typing import Any, ClassVar
 
 import yaml
 from marshmallow import Schema, validates_schema
@@ -24,7 +24,7 @@ class ManifestFile:
     md5: str | None = None
 
     @validates_schema
-    def validate_url_or_schema(self, data, **kwargs) -> None:
+    def validate_url_or_schema(self, data: dict, **kwargs: Any) -> None:
         """Further validation of loaded data."""
         if not ((data["url"] is None) ^ (data["script"] is None)):
             raise ValidationError(f"{data['name']}: provide _one_ of url or script")
@@ -136,8 +136,13 @@ def check_data_directory(directory: Path, repository_root: Path = Path.cwd()) ->
     return return_value
 
 
-def check_all_data(data_root: Path = Path("data"), repository_root: Path = Path.cwd()) -> bool:
-    """Recursively check all data directories."""
+def check_all_data(
+    data_root: Path = Path("data"), repository_root: Path = Path.cwd()
+) -> bool:
+    """Recursively check all data directories.
+
+    TODO - not functional.
+    """
     LOGGER.info(f"Checking all data directories within : {data_root}")
 
     if not data_root.is_absolute():
@@ -149,3 +154,5 @@ def check_all_data(data_root: Path = Path("data"), repository_root: Path = Path.
 
     for each_dir in directories:
         check_data_directory(directory=each_dir)
+
+    return True

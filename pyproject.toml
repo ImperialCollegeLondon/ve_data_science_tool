@@ -66,12 +66,9 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 disallow_incomplete_defs = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
-exclude = [
-  'pyrealm_build_data/splash/splash_py_version/*.py', # Legacy code used for building golden datasets
-]
 ignore_missing_imports = false
 no_implicit_optional = true
-plugins = 'numpy.typing.mypy_plugin'
+plugins = "marshmallow_dataclass.mypy"
 strict_optional = true
 
 [tool.mypy-setup]
@@ -88,11 +85,10 @@ addopts = """
   -v 
   -p no:warnings
   -m "not profiling"
-  --cov=pyrealm
+  --cov=ve_data_science_tool
   --cov-report=html:reports/coverage
   --doctest-modules
-  --ignore=pyrealm/__main__.py
-  --ignore=tests/pmodel/generate_test_inputs.py
+  --ignore=tests/script_files/script.py
   """
 python_files = 'test_*.py'
 testpaths = ['tests', 'pyrealm']

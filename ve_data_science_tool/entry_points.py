@@ -50,10 +50,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
     )
 
     check_script_directory_subparser.add_argument(
-        "directory",
-        type=Path,
-        nargs="*",
-        help="Specific directories to check",
+        "directory", type=Path, help="Specific directory to check", nargs="?"
     )
 
     check_data_directory_subparser = subparsers.add_parser(
@@ -63,10 +60,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
     )
 
     check_data_directory_subparser.add_argument(
-        "directory",
-        type=Path,
-        nargs="*",
-        help="Specific directories to check",
+        "directory", type=Path, help="Specific directory to check"
     )
 
     # TODO Currently no argument but probably will want them
@@ -86,8 +80,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         return 0
 
     match args.subcommand:
-        case "script":
-            root = Path.cwd() if args.repository_root is None else args.repository_root
+        case "scripts":
             check_scripts(config=config, directory=args.directory)
         case "data":
             root = Path.cwd() if args.repository_root is None else args.repository_root
@@ -96,7 +89,3 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
             globus_sync()
 
     return 1
-
-
-if __name__ == "__main__":
-    ve_data_science_tool_cli()
