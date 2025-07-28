@@ -1,0 +1,33 @@
+# PyCharm and vscode settings
+.idea/
+.vscode/
+
+# Mac DS files
+.DS_Store
+
+# compiled python
+*.pyc
+
+# build and dist
+build
+dist
+pyrealm.egg-info
+
+# Ignore local pyenv settings
+.python-version
+
+# notebook caching
+.ipynb_checkpoints
+
+# R hidden files
+.Rapp.history
+
+# Coverage
+.coverage
+
+# caches
+.mypy_cache/
+__pycache__
+
+
+
