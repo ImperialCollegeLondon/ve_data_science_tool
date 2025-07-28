@@ -1,5 +1,6 @@
 """Test the data module."""
 
+import logging
 from contextlib import nullcontext as does_not_raise
 from logging import ERROR, INFO
 from pathlib import Path
@@ -206,6 +207,8 @@ def test_check_data_directory(
 
     from ve_data_science_tool.data import check_data_directory
 
+    caplog.set_level(logging.INFO)
+
     # Deploy test payload to a temporary directory
     data_relative_path = Path(directory_path)
     test_dir = tmp_path / data_relative_path
@@ -216,9 +219,7 @@ def test_check_data_directory(
             test_file.write(file_contents)
 
     # Test the function
-    result = check_data_directory(
-        directory=data_relative_path, repository_root=tmp_path
-    )
+    result = check_data_directory(directory=test_dir)
 
     assert result == expected_result
 

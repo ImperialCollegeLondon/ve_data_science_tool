@@ -41,7 +41,7 @@ class Manifest:
     Schema: ClassVar[type[Schema]]
 
 
-def check_data_directory(directory: Path, repository_root: Path = Path.cwd()) -> bool:
+def check_data_directory(directory: Path) -> bool:
     """Validate a data directory.
 
     This function checks that a data directory has a MANIFEST.yaml file and that the
@@ -57,9 +57,6 @@ def check_data_directory(directory: Path, repository_root: Path = Path.cwd()) ->
     """
 
     LOGGER.info(f"Checking {directory}")
-
-    if not directory.is_absolute():
-        directory = repository_root / directory
 
     # Do we have a directory to validate
     if not directory.exists():
@@ -104,8 +101,10 @@ def check_data_directory(directory: Path, repository_root: Path = Path.cwd()) ->
     # - These checks should all run before returning to give a complete assessment.
     return_value = True
 
-    # - Does the directory name match the entry in the manifest?
-    if (repository_root / manifest.directory) != directory:
+    # Is the relative directory path in the manifest file congruent with its location?
+    manifest_path_parts = Path(manifest.directory).parts
+    location_path_parts = directory.parts[-len(manifest_path_parts) :]
+    if manifest_path_parts != location_path_parts:
         LOGGER.error(
             f" - MANIFEST.yaml directory name does not match: {manifest.directory}"
         )
