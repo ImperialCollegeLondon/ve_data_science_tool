@@ -1,0 +1,127 @@
+[project]
+authors = [
+  {name = "David Orme", email = "d.orme@imperial.ac.uk"},
+]
+dependencies = [
+  "globus-sdk (>=3.61.0,<4.0.0)",
+  "platformdirs (>=4.3.8,<5.0.0)",
+  "marshmallow-dataclass (>=8.7.1,<9.0.0)",
+  "pyyaml (>=6.0.2,<7.0.0)",
+]
+description = "A package to maintain file metadata and synchronise data files for the ve_data_science repository"
+license = {text = "MIT"}
+name = "ve-data-science-tool"
+readme = "README.md"
+requires-python = ">=3.11"
+version = "0.1.0"
+
+packages = [
+  {include = "ve_data_science_tool"},
+]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering",
+  "Intended Audience :: Science/Research",
+  "Development Status :: 3 - Alpha",
+]
+
+keywords = ["Data Science", "Virtual Ecosystem"]
+license-files = ["LICENSE"]
+maintainers = [
+  {name = "David Orme", email = "d.orme@imperial.ac.uk"},
+]
+
+[project.urls]
+repository = "https://github.com/ImperialCollegeLondon/ve_data_science_tool"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+
+[tool.poetry.group.test.dependencies]
+graphviz = "*"
+pytest = "^8.4.1"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.8.1"
+pytest-profiling = "^1.7.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.0"
+pre-commit = "^3.2.0"
+ruff = "^0.5"
+
+[tool.poetry.group.types.dependencies]
+types-pyyaml = "^6.0.12.20250516"
+
+[tool.poetry.scripts]
+ve_data_science_tool = "ve_data_science_tool.entry_points:ve_data_science_tool_cli"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+
+[tool.mypy]
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+exclude = [
+  'pyrealm_build_data/splash/splash_py_version/*.py', # Legacy code used for building golden datasets
+]
+ignore_missing_imports = false
+no_implicit_optional = true
+plugins = 'numpy.typing.mypy_plugin'
+strict_optional = true
+
+[tool.mypy-setup]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+module = "tests.*"
+
+[tool.pytest.ini_options]
+addopts = """
+  -v 
+  -p no:warnings
+  -m "not profiling"
+  --cov=pyrealm
+  --cov-report=html:reports/coverage
+  --doctest-modules
+  --ignore=pyrealm/__main__.py
+  --ignore=tests/pmodel/generate_test_inputs.py
+  """
+python_files = 'test_*.py'
+testpaths = ['tests', 'pyrealm']
+
+[tool.ruff]
+exclude = []
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable all `pydocstyle` rules, limiting to those that adhere to the
+# Google convention via `convention = "google"`, below.
+select = [
+  # "B", # flake8-bugbear
+  # "SIM", # flake8-simplify
+  "E", # pycodestyle
+  "F", # pyflakes
+  "D", # pydocstyle
+  "I", # isort
+  "UP", # pyupgrade
+  "RUF", # RUF specific checks
+  "NPY201",
+]
+
+# On top of the Google convention, disable:
+ignore = [
+  "D202", # Blank line after docstring is ok
+  "D107", # Location of __init__ docstring in class not __init__"
+  "D105", # Magic methods do not need docstrings.
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
