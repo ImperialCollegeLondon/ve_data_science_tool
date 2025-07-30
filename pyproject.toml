@@ -38,7 +38,7 @@ maintainers = [
 repository = "https://github.com/ImperialCollegeLondon/ve_data_science_tool"
 
 [tool.poetry]
-requires-poetry = ">=2.0"
+requires-poetry = ">=2.1"
 
 [tool.poetry.group.test.dependencies]
 graphviz = "*"
@@ -48,10 +48,10 @@ pytest-mock = "^3.8.1"
 pytest-profiling = "^1.7.0"
 
 [tool.poetry.group.dev.dependencies]
+ipython = "^9.4.0"
 mypy = "^1.0"
 pre-commit = "^3.2.0"
 ruff = "^0.5"
-ipython = "^9.4.0"
 
 [tool.poetry.group.types.dependencies]
 types-pyyaml = "^6.0.12.20250516"
