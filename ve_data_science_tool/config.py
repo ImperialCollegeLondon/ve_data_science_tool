@@ -27,7 +27,7 @@ class Config:
     app_client_uuid: str
     app_client_name: str
     remote_collection_uuid: str
-    local_collection_uuid: str | None = None
+    local_collection_uuid: str
 
     Schema: ClassVar[type[Schema]]
 
@@ -71,7 +71,13 @@ def configure(
         )
 
     # Retrieve the local collection UUID using the globus_sdk and set it
+    # TODO - likely needs more error trapping
     local = globus_sdk.LocalGlobusConnectPersonal()
+    if local is None:
+        raise RuntimeError("Could not connect to GlobusPersonalConnect.")
+
+    if local.endpoint_id is None:
+        raise RuntimeError("GlobusPersonalConnect local endpoint not defined.")
 
     config = Config(
         repository_path=str(repository_path),

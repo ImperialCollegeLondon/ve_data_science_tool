@@ -12,6 +12,7 @@ from marshmallow_dataclass import dataclass
 from marshmallow_dataclass.typing import Url
 
 from ve_data_science_tool import LOGGER
+from ve_data_science_tool.config import Config
 
 
 @dataclass
@@ -41,7 +42,7 @@ class Manifest:
     Schema: ClassVar[type[Schema]]
 
 
-def check_data_directory(directory: Path) -> bool:
+def check_data_directory(config: Config, directory: Path) -> bool:
     """Validate a data directory.
 
     This function checks that a data directory has a MANIFEST.yaml file and that the
@@ -55,6 +56,9 @@ def check_data_directory(directory: Path) -> bool:
         directory: A path to a data directory.
         repository_root: The repository root, used to check paths in manifest.
     """
+
+    if directory is None:
+        directory = Path(config.repository_path) / "data"
 
     LOGGER.info(f"Checking {directory}")
 
@@ -135,9 +139,7 @@ def check_data_directory(directory: Path) -> bool:
     return return_value
 
 
-def check_all_data(
-    data_root: Path = Path("data"), repository_root: Path = Path.cwd()
-) -> bool:
+def check_all_data(config: Config, data_root: Path = Path("data")) -> bool:
     """Recursively check all data directories.
 
     TODO - not functional.
@@ -145,13 +147,13 @@ def check_all_data(
     LOGGER.info(f"Checking all data directories within : {data_root}")
 
     if not data_root.is_absolute():
-        data_root = repository_root / data_root
+        data_root = config.repository_path / data_root
 
     # Walk the directories. Future note pathlib.Path.walk() in 3.12+
     directories = [path for path in data_root.rglob("*") if path.is_dir()]
     directories.insert(0, data_root)
 
     for each_dir in directories:
-        check_data_directory(directory=each_dir)
+        check_data_directory(config=config, directory=each_dir)
 
     return True

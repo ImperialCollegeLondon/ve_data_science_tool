@@ -1,7 +1,6 @@
 """Test the scripts module."""
 
 from importlib import resources
-from pathlib import Path
 
 import pytest
 
@@ -59,18 +58,5 @@ def test_check_scripts(fixture_config):
 
     path = resources.files("tests.script_files")
     success = check_scripts(config=fixture_config, directory=path)
-
-    assert success
-
-
-def test_check_templates_directory(fixture_config):
-    """Test on the templates directory to make sure they are compliant."""
-
-    from ve_data_science_tool.scripts import check_scripts
-
-    path = Path(fixture_config.repository_path) / "templates"
-    success = check_scripts(
-        config=fixture_config, directory=path, check_file_locations=False
-    )
 
     assert success

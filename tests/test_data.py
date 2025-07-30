@@ -201,7 +201,13 @@ files:
     ),
 )
 def test_check_data_directory(
-    caplog, tmp_path, directory_path, directory_content, expected_result, expected_log
+    caplog,
+    fixture_config,
+    tmp_path,
+    directory_path,
+    directory_content,
+    expected_result,
+    expected_log,
 ):
     """Test the check_data_directory function."""
 
@@ -219,7 +225,7 @@ def test_check_data_directory(
             test_file.write(file_contents)
 
     # Test the function
-    result = check_data_directory(directory=test_dir)
+    result = check_data_directory(config=fixture_config, directory=test_dir)
 
     assert result == expected_result
 

@@ -8,7 +8,7 @@ from pathlib import Path
 from ve_data_science_tool import LOGGER
 from ve_data_science_tool.config import load_config
 from ve_data_science_tool.data import check_data_directory
-from ve_data_science_tool.globus import globus_sync
+from ve_data_science_tool.globus import globus_status, globus_sync
 from ve_data_science_tool.scripts import check_scripts
 
 
@@ -65,9 +65,16 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
 
     # TODO Currently no argument but probably will want them
     globus_sync_subparser = subparsers.add_parser(  # noqa: F841
-        "sync",
+        "globus_sync",
         description="Synchronise data with GLOBUS",
         help="Synchronise data with GLOBUS",
+    )
+
+    # TODO Currently no argument but probably will want them
+    globus_status_subparser = subparsers.add_parser(  # noqa: F841
+        "globus_status",
+        description="Check the file synchronisation status with GLOBUS",
+        help="Check the file synchronisation status with GLOBUS",
     )
 
     args = parser.parse_args(args=args_list)
@@ -83,9 +90,10 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         case "scripts":
             check_scripts(config=config, directory=args.directory)
         case "data":
-            root = Path.cwd() if args.repository_root is None else args.repository_root
-            check_data_directory(directory=args.directory, repository_root=root)
-        case "sync":
-            globus_sync()
+            check_data_directory(config=config, directory=args.directory)
+        case "globus_sync":
+            globus_sync(config=config)
+        case "globus_status":
+            globus_status(config=config)
 
     return 1

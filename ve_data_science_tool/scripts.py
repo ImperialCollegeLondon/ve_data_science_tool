@@ -255,9 +255,9 @@ def check_scripts(
 
     """
 
-    # Default is to search the whole repo
+    # Default is to search the analysis directory
     if directory is None:
-        directory = Path(config.repository_path)
+        directory = Path(config.repository_path) / "analysis"
 
     LOGGER.info(f"Script checking {directory}")
 

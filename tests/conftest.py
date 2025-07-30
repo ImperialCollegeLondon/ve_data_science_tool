@@ -26,10 +26,12 @@ def record_found_in_log(
 
 @pytest.fixture
 def fixture_config():
-    """Load the configuration.
+    """Create a dummy configuration object."""
+    from ve_data_science_tool.config import Config
 
-    TODO - this requires a test environment where configure() has been run.
-    """
-    from ve_data_science_tool.config import load_config
-
-    return load_config()
+    return Config(
+        repository_path="dummy_value",
+        app_client_uuid="dummy_value",
+        app_client_name="dummy_value",
+        remote_collection_uuid="dummy_value",
+    )
