@@ -74,10 +74,12 @@ def configure(
     # TODO - likely needs more error trapping
     local = globus_sdk.LocalGlobusConnectPersonal()
     if local is None:
-        raise RuntimeError("Could not connect to GlobusPersonalConnect.")
+        raise RuntimeError("Could not connect to Globus Connect Personal.")
 
     if local.endpoint_id is None:
-        raise RuntimeError("GlobusPersonalConnect local endpoint not defined.")
+        raise RuntimeError(
+            "Globus Connect Personal does not provide define a local endpoint."
+        )
 
     config = Config(
         repository_path=str(repository_path),

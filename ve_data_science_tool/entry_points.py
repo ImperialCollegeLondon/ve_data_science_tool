@@ -6,7 +6,7 @@ import textwrap
 from pathlib import Path
 
 from ve_data_science_tool import LOGGER
-from ve_data_science_tool.config import load_config
+from ve_data_science_tool.config import configure, load_config
 from ve_data_science_tool.data import check_data
 from ve_data_science_tool.globus import globus_status, globus_sync
 from ve_data_science_tool.scripts import check_scripts
@@ -77,7 +77,31 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         help="Check the file synchronisation status with GLOBUS",
     )
 
+    configure_subparser = subparsers.add_parser(
+        "configure",
+        description="Configure the tool from the ve_data_science repo root.",
+        help="Configure the tool from the ve_data_science repo root.",
+    )
+
+    required_config = configure_subparser.add_argument_group("Required named arguments")
+    required_config.add_argument(
+        "--client-uuid", type=str, help="GLOBUS app client UUID", required=True
+    )
+
+    required_config.add_argument(
+        "--remote-uuid", type=str, help="GLOBUS remote endpoint UUID", required=True
+    )
+
     args = parser.parse_args(args=args_list)
+
+    # Handle initial configuration step
+    if args.subcommand == "configure":
+        try:
+            configure(client_uuid=args.client_uuid, remote_uuid=args.remote_uuid)
+            return 1
+        except RuntimeError as excep:
+            LOGGER.error(f"Could not create configuration\n{excep!s}")
+            return 0
 
     # Get the configuration
     try:
