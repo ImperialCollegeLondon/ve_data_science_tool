@@ -1,18 +1,60 @@
 # The ve_data_science_tool package
 
 This is a python package to help maintain the Virtual Ecosystem data science repository.
-There are two main areas:
+The modules provide functionality in two main areas:
 
-## Script metadata
+1. Both script files in the repository and data files require additional metadata to help
+   keep track of where data comes from and how it is processed.
 
-Both script files in the repository and data files require additional metadata to help
-keep track of where data comes from and how it is processed. This tool checks that
-metadata is provided and is consistent across the repository.
+2. The data files are not stored within the repo but are gathered under the `data`
+   directory on a GLOBUS share. The directory structure of the files is managed within
+   the repo, using data manifest files to record the directories and their contents.
 
-## Data files
+The package module roles are:
 
-The data files are not stored within the repo but are gathered under the `data`
-directory on a GLOBUS share. The directory structure of the files is managed within the
-repo, using data manifest files to record the directories and their contents. The tool
-provides a synchronisation command to populate the directories with actual data from the
-GLOBUS repo and upload any new data.
+* `config`: provides a `Config` dataclass that stores the local path of a
+  `ve_data_science` repository on a computer along with GLOBUS IDs for the remote data
+  endpoint and the local endpoint provided by GLOBUS Personal Connect. The module can
+  create the configuration and store it in a standard location (`configure()`) and then
+  load the config (`load_config()`).
+
+* `scripts`: provides dataclasses to store script and validate script metadata
+  (`ScriptMetadata` and `ScriptFileDetails`). It provides functions to load and validate
+  metadata from individual script files: the `validate_script_metadata()` function
+  supports R, Python, R Markdown and Myst Markdown file formats. The
+  high-level `check_scripts()` function runs validationto recursively within a top level
+  directory, defaulting to the `analysis` directory.
+
+* `data`: provides dataclasses to store and validate data manifest metadata (`Manifest`
+  and `ManifestFile`). The `check_data_directory()` function checks that the manifest
+  metadata in data directory is valid and matches the directory contents. The high_level
+  `check_data()` function runs validation recursively within a top level directory,
+  defaulting to the `data` directory.
+
+* `globus`: provides functionality to connect to the GLOBUS API and then perform two
+  high-level operations. The `globus_status()` function check the status of the files in
+  the remote and local endpoints are report which files are up to date, missing or
+  outdated across the two locations. The `globus_sync()` function automates the process
+  of synchronising the most recent versions of files between the two endpoints.
+
+* `entry_points`: provides a command-line interface to the high level functions in the
+  other modules.
+
+## Command line usage
+
+The command line tool `ve_data_science_tool` provides four subcommands:
+
+```sh
+ve_data_science_tool scripts
+ve_data_science_tool data
+ve_data_science_tool globus_status
+ve_data_science_tool globus_sync
+```
+
+Each of those subcommands runs the high level functionality from the submodules.
+
+## Testing
+
+There is currently rather minimal testing to check that correctly formatted metadata
+passes validation. There is no testing of the GLOBUS systems, which would require
+extensive mocking of the GLOBUS API.

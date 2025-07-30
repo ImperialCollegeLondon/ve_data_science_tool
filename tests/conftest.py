@@ -34,4 +34,5 @@ def fixture_config():
         app_client_uuid="dummy_value",
         app_client_name="dummy_value",
         remote_collection_uuid="dummy_value",
+        local_collection_uuid="dummy_value",
     )

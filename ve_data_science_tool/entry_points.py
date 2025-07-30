@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ve_data_science_tool import LOGGER
 from ve_data_science_tool.config import load_config
-from ve_data_science_tool.data import check_data_directory
+from ve_data_science_tool.data import check_data
 from ve_data_science_tool.globus import globus_status, globus_sync
 from ve_data_science_tool.scripts import check_scripts
 
@@ -60,7 +60,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
     )
 
     check_data_directory_subparser.add_argument(
-        "directory", type=Path, help="Specific directory to check"
+        "directory", type=Path, help="Specific directory to check", nargs="?"
     )
 
     # TODO Currently no argument but probably will want them
@@ -90,7 +90,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         case "scripts":
             check_scripts(config=config, directory=args.directory)
         case "data":
-            check_data_directory(config=config, directory=args.directory)
+            check_data(config=config, directory=args.directory)
         case "globus_sync":
             globus_sync(config=config)
         case "globus_status":

@@ -237,22 +237,23 @@ def read_markdown_notebook_metadata(file_path: Path) -> dict:
 
 def check_scripts(
     config: Config,
-    directory: Path | None,
+    directory: Path | None = None,
     check_file_locations: bool = True,
     ignore_files: list[str] = ["__init__.py", "README.md"],
 ) -> bool:
-    """Validate a script directory.
+    """Recursively validate metadata in script directories.
 
     This function checks that script files in a directory and its subdirectories provide
     valid metadata. The function logs the validation process and returns True or False
     to indicate success or failure of the validation.
 
     Args:
-        config: TODO
-        directory: TODO
-        check_file_locations: TODO
-        ignore_files: TODO
-
+        config: A config object
+        directory: A directory within which to carry out script validation.
+        check_file_locations: A boolean flag that sets if the function validates the
+            locations of named input and output files from script metadata.
+        ignore_files: A set of filenames that match the various supported formats but
+            that should not be validated.
     """
 
     # Default is to search the analysis directory

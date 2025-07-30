@@ -52,13 +52,10 @@ def check_data_directory(config: Config, directory: Path) -> bool:
     The function logs the validation process and returns True or False to indicate
     success or failure of the validation.
 
-    Arg:
+    Args:
+        config: A Config object.
         directory: A path to a data directory.
-        repository_root: The repository root, used to check paths in manifest.
     """
-
-    if directory is None:
-        directory = Path(config.repository_path) / "data"
 
     LOGGER.info(f"Checking {directory}")
 
@@ -139,19 +136,28 @@ def check_data_directory(config: Config, directory: Path) -> bool:
     return return_value
 
 
-def check_all_data(config: Config, data_root: Path = Path("data")) -> bool:
-    """Recursively check all data directories.
+def check_data(config: Config, directory: Path | None = None) -> bool:
+    """Recursively validate metadata in data directories.
 
-    TODO - not functional.
+    This function checks that a data directory and its subdirectories contain valid
+    metadata. The function logs the validation process and returns True or False to
+    indicate success or failure of the validation.
+
+    Args:
+        config: A config object
+        directory: A directory within which to carry out script validation.
+
     """
-    LOGGER.info(f"Checking all data directories within : {data_root}")
 
-    if not data_root.is_absolute():
-        data_root = config.repository_path / data_root
+    # Default is to search the data directory
+    if directory is None:
+        directory = Path(config.repository_path) / "data"
+
+    LOGGER.info(f"Checking all data directories within : {directory}")
 
     # Walk the directories. Future note pathlib.Path.walk() in 3.12+
-    directories = [path for path in data_root.rglob("*") if path.is_dir()]
-    directories.insert(0, data_root)
+    directories = [path for path in directory.rglob("*") if path.is_dir()]
+    directories.insert(0, directory)
 
     for each_dir in directories:
         check_data_directory(config=config, directory=each_dir)
