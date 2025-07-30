@@ -40,11 +40,37 @@ The package module roles are:
 * `entry_points`: provides a command-line interface to the high level functions in the
   other modules.
 
-## Command line usage
+## Installing and setting up the tool
 
-The command line tool `ve_data_science_tool` provides four subcommands:
+1. Install the package:
 
 ```sh
+pip install git+https://github.com/ImperialCollegeLondon/ve_data_science_tool@main
+```
+
+   You should now be able to run the command `ve_data_science_tool -h`.
+
+1. Make sure you have installed [Globus Connect
+   Personal](https://www.globus.org/globus-connect-personal ), created a
+   personal endpoint and that the Globus Connect Personal app is running.
+
+1. At the command line, change directory to the root of your clone of the
+   `ve_data_science` repo and run the `configure` subcommand. You will need two
+   security ID tokens that identify the tool to GLOBUS and identify the remote endpoint
+   for the `ve_data_science` data and which replace `UVW` and `XYZ` in the code below
+
+```sh
+python -m ve_data_science_tool configure --client-uuid UVW --remote-uuid XYZ
+```
+
+   You should now be able to use the command lines tools below.
+
+## Command line usage
+
+The command line tool `ve_data_science_tool` provides the following subcommands:
+
+```sh
+ve_data_science_tool configure
 ve_data_science_tool scripts
 ve_data_science_tool data
 ve_data_science_tool globus_status
