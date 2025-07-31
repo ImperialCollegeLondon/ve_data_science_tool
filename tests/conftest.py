@@ -36,3 +36,21 @@ def fixture_config():
         remote_collection_uuid="dummy_value",
         local_collection_uuid="dummy_value",
     )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def fixture_mocked_config(session_mocker):
+    """Mock the load config call for all tests."""
+    from ve_data_science_tool.config import Config
+
+    mocked_value = Config(
+        repository_path="dummy_value",
+        app_client_uuid="dummy_value",
+        app_client_name="dummy_value",
+        remote_collection_uuid="dummy_value",
+        local_collection_uuid="dummy_value",
+    )
+
+    session_mocker.patch(
+        "ve_data_science_tool.config.load_config", return_value=mocked_value
+    )
