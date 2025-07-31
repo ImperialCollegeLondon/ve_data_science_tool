@@ -69,15 +69,97 @@ python -m ve_data_science_tool configure --client-uuid UVW --remote-uuid XYZ
 
 The command line tool `ve_data_science_tool` provides the following subcommands:
 
-```sh
-ve_data_science_tool configure
-ve_data_science_tool scripts
-ve_data_science_tool data
-ve_data_science_tool globus_status
-ve_data_science_tool globus_sync
+### configure
+
+The configure subcommand creates the local configuration file for the tool. It requires
+the UUID values for the client app and the remote endpoint.
+
+```txt
+ve_data_science_tool configure -h
+usage: ve_data_science_tool configure [-h] --client-uuid CLIENT_UUID --remote-uuid REMOTE_UUID
+
+Configure the tool from the ve_data_science repo root.
+
+options:
+  -h, --help            show this help message and exit
+
+Required named arguments:
+  --client-uuid CLIENT_UUID
+                        GLOBUS app client UUID
+  --remote-uuid REMOTE_UUID
+                        GLOBUS remote endpoint UUID
 ```
 
-Each of those subcommands runs the high level functionality from the submodules.
+### scripts
+
+The scrips subcommand runs script metadata validation on scripts and notebooks
+recursively within a directory.
+
+```txt
+ve_data_science_tool scripts -h
+usage: ve_data_science_tool scripts [-h] [directory]
+
+Validate script and notebook metadata recursively within a directory. If a directory is 
+not provided then the default is to validate all scripts and notebooks within the 
+`analysis` directory. 
+
+positional arguments:
+  directory   Specific directory to check
+
+options:
+  -h, --help  show this help message and exit
+```
+
+### data
+
+This subcommand checks that the data directories provide directory manifest metadata and
+that the contents of data directories are congruent with the metadata.
+
+```txt
+ve_data_science_tool data -h
+usage: ve_data_science_tool data [-h] [directory]
+
+Validate metadata in data directories recursively within a directory. If a directory is
+not provided then the default is to validate all directories within the `data` 
+directory.
+
+positional arguments:
+  directory   Specific directory to check
+
+options:
+  -h, --help  show this help message and exit
+```
+
+### globus_status
+
+This subcommand checks the status of the contents of the local `data` directory against
+the remote repo and generates a listing of which files are up to date or need
+synchronisation.
+
+```txt
+ve_data_science_tool globus_status -h
+usage: ve_data_science_tool globus_status [-h]
+
+Check the file synchronisation status with GLOBUS
+
+options:
+  -h, --help  show this help message and exit
+```
+
+### globus_sync
+
+This subcommand runs the actual synchronisation. It is probably worth running
+`globus_status` first to check what changes will be made.
+
+```txt
+ve_data_science_tool globus_sync -h  
+usage: ve_data_science_tool globus_sync [-h]
+
+Synchronise data with GLOBUS
+
+options:
+  -h, --help  show this help message and exit
+```
 
 ## Testing
 

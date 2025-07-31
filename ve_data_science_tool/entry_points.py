@@ -45,7 +45,9 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
 
     check_script_directory_subparser = subparsers.add_parser(
         "scripts",
-        description="Check script and notebook metadata",
+        description="""Validate script and notebook metadata recursively within a 
+            directory. If a directory is not provided then the default is to validate 
+            all scripts and notebooks within the `analysis` directory.""",
         help="Check script and notebook metadata",
     )
 
@@ -55,7 +57,9 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
 
     check_data_directory_subparser = subparsers.add_parser(
         "data",
-        description="Check data directories",
+        description="""Validate metadata in data directories recursively within a 
+            directory. If a directory is not provided then the default is to validate 
+            all scripts and notebooks within the `data` directory.""",
         help="Check data directories",
     )
 
