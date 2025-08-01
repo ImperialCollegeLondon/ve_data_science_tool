@@ -96,18 +96,20 @@ The scrips subcommand runs script metadata validation on scripts and notebooks
 recursively within a directory.
 
 ```txt
-ve_data_science_tool scripts -h
-usage: ve_data_science_tool scripts [-h] [directory]
+usage: ve_data_science_tool scripts [-h] [-c] [directory]
 
-Validate script and notebook metadata recursively within a directory. If a directory is 
-not provided then the default is to validate all scripts and notebooks within the 
-`analysis` directory. 
+Validate script and notebook metadata recursively within a directory. If a directory
+is not provided then the default is to validate all scripts and notebooks within
+the `analysis` directory. The --check-file-locations option can be used to turn on
+validation of file paths provided in the `input_files` and `output_files` metadata.
 
 positional arguments:
-  directory   Specific directory to check
+  directory             Specific directory to check
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -c, --check-file-locations
+                        Validate file locations
 ```
 
 ### data

@@ -47,7 +47,11 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         "scripts",
         description="""Validate script and notebook metadata recursively within a 
             directory. If a directory is not provided then the default is to validate 
-            all scripts and notebooks within the `analysis` directory.""",
+            all scripts and notebooks within the `analysis` directory.
+            
+            The --check-file-locations option can be used to turn on validation of file
+            paths provided in the `input_files` and `output_files` metadata.
+            """,
         help="Check script and notebook metadata",
     )
 
@@ -58,7 +62,7 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
     check_script_directory_subparser.add_argument(
         "-c",
         "--check-file-locations",
-        help="Specific directory to check",
+        help="Validate file locations",
         action="store_true",
         default=False,
     )
