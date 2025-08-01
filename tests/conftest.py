@@ -1,5 +1,7 @@
 """Configuration and fixture definitions for testing."""
 
+from importlib import resources
+
 import pytest
 
 
@@ -29,8 +31,10 @@ def fixture_config():
     """Create a dummy configuration object."""
     from ve_data_science_tool.config import Config
 
+    repo_path = resources.files("tests")
+
     return Config(
-        repository_path="dummy_value",
+        repository_path=str(repo_path),
         app_client_uuid="dummy_value",
         app_client_name="dummy_value",
         remote_collection_uuid="dummy_value",
@@ -43,8 +47,10 @@ def fixture_mocked_config(session_mocker):
     """Mock the load config call for all tests."""
     from ve_data_science_tool.config import Config
 
+    repo_path = resources.files("tests")
+
     mocked_value = Config(
-        repository_path="dummy_value",
+        repository_path=str(repo_path),
         app_client_uuid="dummy_value",
         app_client_name="dummy_value",
         remote_collection_uuid="dummy_value",

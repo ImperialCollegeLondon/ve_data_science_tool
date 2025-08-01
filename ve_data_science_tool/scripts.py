@@ -289,7 +289,8 @@ def check_scripts(
     return_value = True
 
     for file in sorted(script_files):
-        rel_path = file.relative_to(config.repository_path)
+        # Get a prettier path for the file relative to the repo root.
+        rel_path = file.absolute().relative_to(config.repository_path)
 
         # Validate the script metadata
         try:
