@@ -55,6 +55,14 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         "directory", type=Path, help="Specific directory to check", nargs="?"
     )
 
+    check_script_directory_subparser.add_argument(
+        "-c",
+        "--check-file-locations",
+        help="Specific directory to check",
+        action="store_true",
+        default=False,
+    )
+
     check_data_directory_subparser = subparsers.add_parser(
         "data",
         description="""Validate metadata in data directories recursively within a 
@@ -116,7 +124,11 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
 
     match args.subcommand:
         case "scripts":
-            check_scripts(config=config, directory=args.directory)
+            check_scripts(
+                config=config,
+                directory=args.directory,
+                check_file_locations=args.check_file_locations,
+            )
         case "data":
             check_data(config=config, directory=args.directory)
         case "globus_sync":

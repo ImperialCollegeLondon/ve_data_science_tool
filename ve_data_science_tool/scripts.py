@@ -4,6 +4,8 @@ import ast
 import re
 from dataclasses import field
 from pathlib import Path
+from pprint import pformat
+from textwrap import indent
 from typing import ClassVar
 
 import yaml
@@ -92,8 +94,8 @@ def validate_script_metadata(file_path: Path) -> ScriptMetadata:
 
     try:
         metadata = ScriptMetadata.Schema().load(yaml_content)
-    except ValidationError as excep:
-        raise ValueError(f"Could not validate metadata in {file_path}" + str(excep))
+    except ValidationError:
+        raise
 
     return metadata
 
@@ -286,40 +288,45 @@ def check_scripts(
     # Check each of the script files, recording if the process has logged errors
     return_value = True
 
-    for file in script_files:
+    for file in sorted(script_files):
+        rel_path = file.relative_to(config.repository_path)
+
         # Validate the script metadata
         try:
             yaml_contents = validate_script_metadata(file_path=file)
         except (ValueError, YAMLError, ValidationError) as excep:
-            LOGGER.error(
-                f"   X {file.name} did not pass metadata validation.\n" + str(excep)
-            )
+            LOGGER.error(f"   \u2717 {rel_path}")
+            if isinstance(excep, ValidationError):
+                LOGGER.error(
+                    indent(pformat(excep.messages, indent=1, compact=True), "     ")
+                )
+            else:
+                LOGGER.error("     " + str(excep))
             return_value = False
             continue
 
-        LOGGER.info(f"   - {file.name} contains valid metadata")
+        LOGGER.info(f"   \u2713 {rel_path}")
 
         if check_file_locations:
             # Validate any named input and output paths
-            inputs = [Path(file.path) / file.name for file in yaml_contents.input_files]
 
-            for file in inputs:
-                if not file.exists():
-                    LOGGER.error(f"     X Input file not found: {file!s}")
-                    return_value = False
-                else:
-                    LOGGER.error(f"     - Input file found: {file!s}")
+            io_files = {
+                "inputs": [
+                    Path(file.path) / file.name for file in yaml_contents.input_files
+                ],
+                "outputs": [
+                    Path(file.path) / file.name for file in yaml_contents.output_files
+                ],
+            }
 
-            outputs = [
-                Path(file.path) / file.name for file in yaml_contents.output_files
-            ]
-
-            for file in outputs:
-                if not file.exists():
-                    LOGGER.error(f"     X Output file not found: {file!s}")
-                    return_value = False
-                else:
-                    LOGGER.error(f"     - Output file found: {file!s}")
+            for io_type, files in io_files.items():
+                LOGGER.info(f"     Checking {io_type} files")
+                for file in files:
+                    if not file.exists():
+                        LOGGER.error(f"       \u2717 File not found: {file!s}")
+                        return_value = False
+                    else:
+                        LOGGER.error(f"       \u2713 File found: {file!s}")
 
             # TODO - other validation? required packages in requirement/pyproject.toml
 
