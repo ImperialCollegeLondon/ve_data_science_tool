@@ -327,7 +327,7 @@ def check_scripts(
                         LOGGER.error(f"       \u2717 File not found: {file!s}")
                         return_value = False
                     else:
-                        LOGGER.error(f"       \u2713 File found: {file!s}")
+                        LOGGER.info(f"       \u2713 File found: {file!s}")
 
             # TODO - other validation? required packages in requirement/pyproject.toml
 
