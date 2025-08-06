@@ -27,12 +27,6 @@ from .conftest import record_found_in_log
             id="good_script",
         ),
         pytest.param(
-            {"name": "file.txt", "url": "https://file.txt", "script": "script.py"},
-            pytest.raises(ValidationError),
-            (("_schema", ["file.txt: provide _one_ of url or script"]),),
-            id="bad_url_and_script",
-        ),
-        pytest.param(
             {"naem": "file.txt", "script": "script.py"},
             pytest.raises(ValidationError),
             (
@@ -77,7 +71,7 @@ files:
                 ("data_file2.csv", ""),
             ),
             True,
-            ((INFO, " - Directory validated"),),
+            ((INFO, " \u2713 Valid manifest"),),
             id="all_good",
         ),
         pytest.param(
@@ -87,8 +81,20 @@ files:
                 ("data_file2.csv", ""),
             ),
             False,
-            ((ERROR, " - MANIFEST.yaml not found"),),
+            ((ERROR, " \u2717 MANIFEST.yaml not found"),),
             id="no_manifest",
+        ),
+        pytest.param(
+            "data/primary/carbon_use_efficiency",
+            (
+                (
+                    "MANIFEST.yaml",
+                    """directory: data/primary/carbon_use_efficiency files: []""",
+                ),
+            ),
+            False,
+            ((ERROR, " \u2717 MANIFEST.yaml file in empty directory"),),
+            id="manifest in empty directory",
         ),
         pytest.param(
             "data/primary/carbon_use_efficiency",
@@ -97,9 +103,10 @@ files:
                     "MANIFEST.yaml",
                     """ - this: is\n   not; valid YAML""",
                 ),
+                ("data_file1.csv", ""),
             ),
             False,
-            ((ERROR, " - Cannot parse MANIFEST.yaml"),),
+            ((ERROR, " \u2717 Cannot parse MANIFEST.yaml"),),
             id="yaml_invalid",
         ),
         pytest.param(
@@ -114,9 +121,10 @@ files:
     md5: e1e72bc35b6a23f3937d507623c1177f
 """,
                 ),
+                ("data_file1.csv", ""),
             ),
             False,
-            ((ERROR, " - MANIFEST.yaml structure incorrect:"),),
+            ((ERROR, " \u2717 MANIFEST.yaml structure incorrect:"),),
             id="yaml_directory_misnamed",
         ),
         pytest.param(
@@ -126,9 +134,10 @@ files:
                     "MANIFEST.yaml",
                     """directory: data/primary/carbon_use_efficiency""",
                 ),
+                ("data_file1.csv", ""),
             ),
             False,
-            ((ERROR, " - MANIFEST.yaml structure incorrect:"),),
+            ((ERROR, " \u2717 MANIFEST.yaml structure incorrect:"),),
             id="yaml_no_files",
         ),
         pytest.param(
@@ -149,7 +158,7 @@ files:
             (
                 (
                     ERROR,
-                    " - MANIFEST.yaml directory name does not match: "
+                    "   \u2717 MANIFEST.yaml directory does not match location: "
                     "data/primary/soil/carbon_use_efficiency",
                 ),
             ),
@@ -175,9 +184,8 @@ files:
             ),
             False,
             (
-                (ERROR, " - MANIFEST.yaml files do not match directory contents:"),
-                (ERROR, "   Only in manifest: data_file3.csv"),
-                (ERROR, "   Only in directory: data_file1.csv"),
+                (ERROR, "   \u2717 Unknown files in manifest: data_file3.csv"),
+                (ERROR, "   \u2717 Files missing from manifest: data_file1.csv"),
             ),
             id="file_list_issues",
         ),
@@ -195,7 +203,13 @@ files:
                 ("data_file3.csv", ""),
             ),
             False,
-            ((ERROR, " - MANIFEST.yaml structure incorrect:"),),
+            (
+                (
+                    ERROR,
+                    "   \u2717 File does not provide _one_ of url or "
+                    "script: data_file3.csv",
+                ),
+            ),
             id="no_url_or_schema",
         ),
     ),
@@ -223,6 +237,9 @@ def test_check_data_directory(
     for file_name, file_contents in directory_content:
         with open(test_dir / file_name, "w") as test_file:
             test_file.write(file_contents)
+
+    # Update the config to point to the temporary directory
+    fixture_config.repository_path = str(tmp_path)
 
     # Test the function
     result = check_data_directory(config=fixture_config, directory=test_dir)

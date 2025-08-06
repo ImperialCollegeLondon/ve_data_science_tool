@@ -114,7 +114,7 @@ def check_data_directory(config: Config, directory: Path) -> bool:
         return False
 
     if not actual_files and manifest_file.exists():
-        LOGGER.error(" \u2717 MANIFEST.yaml file not required unless files are present")
+        LOGGER.error(" \u2717 MANIFEST.yaml file in empty directory")
         return False
 
     if not actual_files and not manifest_file.exists():
@@ -141,7 +141,7 @@ def check_data_directory(config: Config, directory: Path) -> bool:
     # Is the relative directory path in the manifest file congruent with its location?
     if directory_relative != Path(manifest.directory):
         logged_errors.append(
-            f"   \u2717 MANIFEST.yaml directory name does not match "
+            f"   \u2717 MANIFEST.yaml directory does not match "
             f"location: {manifest.directory}"
         )
         return_value = False
