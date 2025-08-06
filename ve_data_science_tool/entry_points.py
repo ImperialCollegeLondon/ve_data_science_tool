@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ve_data_science_tool import LOGGER
 from ve_data_science_tool.config import configure, load_config
-from ve_data_science_tool.data import check_data
+from ve_data_science_tool.data import check_data, update_manifests
 from ve_data_science_tool.globus import globus_status, globus_sync
 from ve_data_science_tool.scripts import check_scripts
 
@@ -79,6 +79,20 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
         "directory", type=Path, help="Specific directory to check", nargs="?"
     )
 
+    update_manifests_subparser = subparsers.add_parser(
+        "manifests",
+        description="""Update manifest files within data directories recursively within
+            a directory. If a directory is not provided then the default is to update
+            manifests starting in the root `data` directory. This command does not check
+            manifest metadata - just updates the manifests to ensure all files are
+            included. It does not remove files from the manifest.""",
+        help="Update data manifests",
+    )
+
+    update_manifests_subparser.add_argument(
+        "directory", type=Path, help="Specific directory to update", nargs="?"
+    )
+
     # TODO Currently no argument but probably will want them
     globus_sync_subparser = subparsers.add_parser(  # noqa: F841
         "globus_sync",
@@ -133,6 +147,8 @@ def ve_data_science_tool_cli(args_list: list[str] | None = None) -> int:
                 directory=args.directory,
                 check_file_locations=args.check_file_locations,
             )
+        case "manifests":
+            update_manifests(config=config, directory=args.directory)
         case "data":
             check_data(config=config, directory=args.directory)
         case "globus_sync":

@@ -112,6 +112,26 @@ options:
                         Validate file locations
 ```
 
+### manifests
+
+This subcommand updates the manifest files within data directories.
+
+```txt
+ve_data_science_tool manifests -h
+usage: ve_data_science_tool manifests [-h] [directory]
+
+Update manifest files within data directories recursively within a directory. If a 
+directory is not provided then the default is to update manifests starting in the root 
+`data` directory. This command does not check manifest metadata - just updates the 
+manifests to ensure all files are included. It does not remove files from the manifest.
+
+positional arguments:
+  directory   Specific directory to update
+
+options:
+  -h, --help  show this help message and exit
+```
+
 ### data
 
 This subcommand checks that the data directories provide directory manifest metadata and
