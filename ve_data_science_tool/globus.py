@@ -348,7 +348,7 @@ def globus_ls(
 def get_sync_status(
     transfer_client: globus_sdk.TransferClient,
     config: Config,
-    ls_filter: str = "name:!~.*",
+    ls_filter: str = "name:!~.*/name:!~MANIFEST.yaml",
 ) -> dict[str, list[str]]:
     """Generate a report on the synchronization of the remote and local endpoints.
 
@@ -362,11 +362,15 @@ def get_sync_status(
     * ``remote_outdated``:  present on both but the local file is newer
     * ``local_outdated``: present on both but the remote file is newer
 
+    The status check explicitly ignores hidden files and MANIFEST.yaml files. For
+    details of the filter string syntax, see:
+    https://docs.globus.org/api/transfer/file_operations/#dir_listing_filtering
+
     Args:
         transfer_client: An authenticated GLOBUS transfer client.
         config: A config object.
         ls_filter: Filters to pass on to the listing process. The default is to ignore
-            hidden files.
+            hidden files and MANIFEST.yaml files.
     """
 
     # Get the file listings for each endpoint
