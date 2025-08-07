@@ -87,14 +87,19 @@ def globus_transfer(
     source_path: str,
     destination_path: str,
     filters: tuple[
-        tuple[Literal["include", "exclude"], str, Literal["file", "dir"]]
-    ] = (("exclude", ".*", "file"),),
+        tuple[Literal["include", "exclude"], str, Literal["file", "dir"]], ...
+    ] = (
+        ("exclude", ".*", "file"),
+        ("exclude", "MANIFEST.yaml", "file"),
+    ),
 ) -> bool:
     """Synchronize files with GLOBUS.
 
     This function sets up and runs a transfer between two endpoints. See the SDK
     documentation at https://docs.globus.org/api/transfer/task/#task_document for
     information on the task info data that is being monitored.
+
+    By default, the transfer filters out MANIFEST.yaml files and hidden files.
 
     Args:
         transfer_client: An authenticated GLOBUS transfer client.
